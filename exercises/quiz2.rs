@@ -20,8 +20,6 @@
 //
 // No hints this time!
 
-// I AM NOT DONE
-
 pub enum Command {
     Uppercase,
     Trim,
@@ -29,24 +27,68 @@ pub enum Command {
 }
 
 mod my_module {
+    use std::future::IntoFuture;
+
     use super::Command;
 
-    // TODO: Complete the function signature!
-    pub fn transformer(input: ???) -> ??? {
-        // TODO: Complete the output declaration!
-        let mut output: ??? = vec![];
+    // // my version
+    // pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
+    //     // TODO: Complete the output declaration!
+    //     let mut output: Vec<String> = vec![];
+    //     for (string, command) in input.iter() {
+    //         let output_string = match command {
+    //             Command::Uppercase => string.to_uppercase().clone(),
+    //             Command::Trim => string.trim().to_string().clone(),
+    //             Command::Append(size) => {
+    //                 let mut num = *size as i32;
+    //                 let mut tmp = string.clone();
+    //                 while num != 0 {
+    //                     tmp.push_str("bar");
+    //                     num -= 1;
+    //                 }
+    //                 tmp
+    //             }
+    //         };
+    //         output.push(output_string);
+    //     }
+    //     output
+    // }
+
+    // chatgpt version
+    pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
+        let mut output: Vec<String> = Vec::with_capacity(input.len()); // 预分配
         for (string, command) in input.iter() {
-            // TODO: Complete the function body. You can do it!
+            let output_string = match command {
+                Command::Uppercase => string.to_uppercase(),
+                Command::Trim => string.trim().to_string(),
+                Command::Append(size) => {
+                    let bar = "bar".repeat(*size);
+                    format!("{}{}", string, bar)
+                }
+            };
+            output.push(output_string);
         }
         output
     }
+
+    // chatgpt version, stream style
+    // pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
+    //     input
+    //         .into_iter()
+    //         .map(|(string, command)| match command {
+    //             Command::Uppercase => string.to_uppercase(),
+    //             Command::Trim => string.trim().to_string(),
+    //             Command::Append(size) => string + &"bar".repeat(size),
+    //         })
+    //         .collect()
+    // }
 }
 
 #[cfg(test)]
 mod tests {
     // TODO: What do we need to import to have `transformer` in scope?
-    use ???;
     use super::Command;
+    use crate::my_module::transformer;
 
     #[test]
     fn it_works() {
